@@ -6,7 +6,7 @@ defmodule LinkedList do
   """
   @spec new() :: t
   def new() do
-    # Your implementation here...
+    {0, nil, nil}
   end
 
   @doc """
@@ -14,7 +14,7 @@ defmodule LinkedList do
   """
   @spec push(t, any()) :: t
   def push(list, elem) do
-    # Your implementation here...
+    {elem(list, 0) + 1, elem, list}
   end
 
   @doc """
@@ -22,7 +22,7 @@ defmodule LinkedList do
   """
   @spec length(t) :: non_neg_integer()
   def length(list) do
-    # Your implementation here...
+    elem(list, 0)
   end
 
   @doc """
@@ -30,7 +30,7 @@ defmodule LinkedList do
   """
   @spec empty?(t) :: boolean()
   def empty?(list) do
-    # Your implementation here...
+    elem(list, 0) == 0
   end
 
   @doc """
@@ -38,7 +38,10 @@ defmodule LinkedList do
   """
   @spec peek(t) :: {:ok, any()} | {:error, :empty_list}
   def peek(list) do
-    # Your implementation here...
+    cond do
+      empty?(list) -> {:error, :empty_list}
+      true -> {:ok, elem(list, 1)}
+    end
   end
 
   @doc """
@@ -46,7 +49,10 @@ defmodule LinkedList do
   """
   @spec tail(t) :: {:ok, t} | {:error, :empty_list}
   def tail(list) do
-    # Your implementation here...
+    cond do
+      empty?(list) -> {:error, :empty_list}
+      true -> {:ok, elem(list, 2)}
+    end
   end
 
   @doc """
@@ -54,7 +60,10 @@ defmodule LinkedList do
   """
   @spec pop(t) :: {:ok, any(), t} | {:error, :empty_list}
   def pop(list) do
-    # Your implementation here...
+    cond do
+      empty?(list) -> {:error, :empty_list}
+      true -> {:ok, elem(list, 1), elem(list, 2)}
+    end
   end
 
   @doc """
@@ -62,7 +71,12 @@ defmodule LinkedList do
   """
   @spec from_list(list()) :: t
   def from_list(list) do
-    # Your implementation here...
+    _from_list(Enum.reverse(list), new)
+  end
+
+  defp _from_list([], list), do: list
+  defp _from_list([h|t], list) do
+    _from_list(t, push(list, h))
   end
 
   @doc """
@@ -70,7 +84,12 @@ defmodule LinkedList do
   """
   @spec to_list(t) :: list()
   def to_list(list) do
-    # Your implementation here...
+    _to_list(list, [])
+  end
+
+  defp _to_list({0, _value, _list}, acc), do: acc
+  defp _to_list({_length, value, list}, acc) do
+    _to_list(list, acc ++ [value])
   end
 
   @doc """
@@ -78,6 +97,11 @@ defmodule LinkedList do
   """
   @spec reverse(t) :: t
   def reverse(list) do
-    # Your implementation here...
+    _reverse(pop(list), new)
+  end
+
+  defp _reverse({0, _value, nil}, new_list), do: new_list
+  defp _reverse({_length, value, tail}, new_list) do
+    _reverse(tail, push(new_list, value))
   end
 end
